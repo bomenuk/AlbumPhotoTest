@@ -14,6 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AlbumPhotoFetchService.Contracts\AlbumPhotoFetchService.Contracts.csproj" />
+    <ProjectReference Include="..\AlbumPhotoSerivce\AlbumPhotoFetchService.csproj" />
+    <ProjectReference Include="..\Caching.Contracts\Caching.Contracts.csproj" />
+    <ProjectReference Include="..\Caching.MemoryBased\Caching.MemoryBased.csproj" />
+    <ProjectReference Include="..\Repository\Repository.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
