@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AlbumPhotoFetchService;
+using AlbumPhotoFetchService.Contracts;
+using AlbumPhotoFetchService.Contracts.Entities;
+using Caching.Contracts;
+using Caching.MemoryBased;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Repository.Contracts;
+using Repository.UrlBased;
 
-namespace WebTest1
+namespace AlbumPhotoTest
 {
     public class Startup
     {
@@ -26,6 +26,10 @@ namespace WebTest1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<IAlbumPhotoService, AlbumPhotoService>();
+            services.AddSingleton<ICacheClient<baseServiceEntity>, MemoryBasedCacheClient<baseServiceEntity>>();
+            services.AddScoped<IAlbumRepository, AlbumRepository>();
+            services.AddScoped<IPhotoRepository, PhotoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

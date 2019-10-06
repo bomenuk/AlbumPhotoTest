@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
+using Repository.Contracts;
 using Repository.Contracts.DTOs;
 
 namespace Repository.UrlBased

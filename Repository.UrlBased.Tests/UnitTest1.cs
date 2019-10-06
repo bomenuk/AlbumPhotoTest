@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AlbumPhotoFetchService.Tests
+namespace Repository.UrlBased.Tests
 {
     [TestClass]
     public class UnitTest1

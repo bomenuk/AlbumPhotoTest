@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AlbumPhotoFetchService.Contracts\AlbumPhotoFetchService.Contracts.csproj" />
+    <ProjectReference Include="..\CacheEvictionPolicy\CacheEvictionPolicy.csproj" />
   </ItemGroup>
 
 </Project>

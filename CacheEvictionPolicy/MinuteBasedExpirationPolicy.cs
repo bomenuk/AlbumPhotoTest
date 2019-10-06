@@ -7,19 +7,21 @@ namespace CacheEvictionPolicy
     {
         private const int MIN_MINUTE_TIME = 1;
         private readonly int _minutesToExpire;
+        private readonly DateTimeAdapter _dateTimeAdapter;
+        
         public string Name
         {
             get { return "TimeBasedExpirationEvictionPolicy"; }
         }
         public DateTime? TimeToExpire { get; private set; }
-        public IEvictionPolicy RefreshExpiration()
-        {
-            SetTimeToExpire(_minutesToExpire);
-            return this;
-        }
 
-        public MinuteBasedExpirationPolicy(int minutesToExpire)
+        public MinuteBasedExpirationPolicy(int minutesToExpire, DateTimeAdapter dateTimeAdapter = null)
         {
+            if(dateTimeAdapter == null)
+            {
+                dateTimeAdapter = new DateTimeAdapter();
+            }
+            _dateTimeAdapter = dateTimeAdapter;
             _minutesToExpire = minutesToExpire;
             SetTimeToExpire(_minutesToExpire);
         }
@@ -30,8 +32,14 @@ namespace CacheEvictionPolicy
             {
                 TimeToExpire = DateTime.Now.AddMinutes(minutesToExpire);
             }
-
-            TimeToExpire = DateTime.Now.AddMinutes(MIN_MINUTE_TIME);
+            else
+            {
+                TimeToExpire = DateTime.Now.AddMinutes(MIN_MINUTE_TIME);
+            }            
         }
+
+        public bool IsExpired() { return  _dateTimeAdapter.GetCurrentTime() > TimeToExpire; }
+
+        
     }
 }

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Repository.DTOs;
+using Repository.Contracts;
+using Repository.Contracts.DTOs;
 
 namespace Repository.UrlBased
 {
-    public class PhotoRepository: baseRepository<Photo>
+    public class PhotoRepository: baseRepository<Photo>, IPhotoRepository
     {
-        public IList<Photo> GetPhotosByAlbum(int albumId)
+        public IList<Photo> GetPhotosByAlbumId(int albumId)
         {
-            return GetAll().Where(p => p.AlbumnId == albumId).ToList();
+            return GetAll().Where(p => p.AlbumId == albumId).ToList();
         }
     }
 }

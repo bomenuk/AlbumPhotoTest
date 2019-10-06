@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AlbumPhotoService.Contracts;
-using AlbumPhotoService.Contracts.Entities;
+using AlbumPhotoFetchService.Contracts;
+using AlbumPhotoFetchService.Contracts.Entities;
 using CacheEvictionPolicy;
 using Caching.Contracts;
-using Repository;
+using Repository.Contracts;
 
 namespace AlbumPhotoFetchService
 {
     public class AlbumPhotoService: IAlbumPhotoService
     {
-        private readonly ICacheClient _cacheClient;
+        private readonly ICacheClient<baseServiceEntity> _cacheClient;
         private readonly IAlbumRepository _albumRepository;
         private readonly IPhotoRepository _photoRepository;
 
-        public AlbumPhotoService(ICacheClient cacheClient, IAlbumRepository albumRepository,
+        public AlbumPhotoService(ICacheClient<baseServiceEntity> cacheClient, IAlbumRepository albumRepository,
             IPhotoRepository photoRepository)
         {
             _cacheClient = cacheClient;
@@ -25,35 +25,35 @@ namespace AlbumPhotoFetchService
 
         public Album GetAlbum(int albumId)
         {
-            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20));
+            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20)).Cast<Album>();
             return albums.FirstOrDefault(a => a.Id == albumId);
         }
 
         public IList<Album> GetAllAlbums()
         {
-            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20));
+            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20)).Cast<Album>().ToList();
             return albums;
         }
 
         public IList<Album> GetAlbumsByUserId(int userId)
         {
-            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20));
+            var albums = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Album)), albumMissLoadFunc, new MinuteBasedExpirationPolicy(20)).Cast<Album>().ToList();
             return albums.Where(a => a.UserId == userId).ToList();
         }
 
         public Photo GetPhoto(int photoId)
         {
-            var photos = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Photo)), photoMissLoadFunc, new MinuteBasedExpirationPolicy(3));
+            var photos = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Photo)), photoMissLoadFunc, new MinuteBasedExpirationPolicy(5)).Cast<Photo>();
             return photos.FirstOrDefault(p => p.Id == photoId);
         }
 
-        public IList<Photo> GetAllPoPhotos()
+        public IList<Photo> GetAllPhotos()
         {
-            var photos = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Photo)), photoMissLoadFunc, new MinuteBasedExpirationPolicy(3));
+            var photos = _cacheClient.GetTopicData(GenerateCacheTopicNameFromEntity(typeof(Photo)), photoMissLoadFunc, new MinuteBasedExpirationPolicy(5)).Cast<Photo>().ToList();
             return photos;
         }
 
-        private IList<Album> albumMissLoadFunc(string topicName)
+        private IList<baseServiceEntity> albumMissLoadFunc()
         {
             var albums = new List<Album>();
             var albumData = _albumRepository.GetAll();
@@ -66,24 +66,23 @@ namespace AlbumPhotoFetchService
                     Id = album.Id,
                     Title = album.Title,
                     UserId = album.UserId,
+                    Photos = FindPhotosFromAlbumId(album.Id, photoData)
                 });
             }
-
-            albums.ForEach(a => a.Photos = photoData.Where(p => p.AlbumnId == a.Id)
-                .Select(p => new Photo {AlbumId = p.AlbumnId, Id = p.Id, Title = p.Title, Url = p.Url}).ToList());
-            return albums;
+            return albums.Cast<baseServiceEntity>().ToList();
         }
 
-        private IList<Photo> photoMissLoadFunc(string topicName)
+        private IList<Photo> FindPhotosFromAlbumId(int albumId, IList<Repository.Contracts.DTOs.Photo> photosData)
         {
-            var photos = _photoRepository.GetAll().Select(p=>new Photo{AlbumId = p.AlbumnId, Id = p.Id, Title = p.Title, Url = p.Url}).ToList();
+            return photosData.Where(p => p.AlbumId == albumId)
+                .Select(p => new Photo { AlbumId = p.AlbumId, Id = p.Id, Title = p.Title, Url = p.Url }).ToList();
+        }
+
+        private IList<baseServiceEntity> photoMissLoadFunc()
+        {
+            var photos = _photoRepository.GetAll().Select(p=>new Photo{AlbumId = p.AlbumId, Id = p.Id, Title = p.Title, Url = p.Url}).Cast<baseServiceEntity>().ToList();
             return photos;
-        }
-
-        public IList<Album> GetAlbumsForUser(int userId)
-        {
-            throw new System.NotImplementedException();
-        }
+        }        
 
         private string GenerateCacheTopicNameFromEntity(Type entityType)
         {

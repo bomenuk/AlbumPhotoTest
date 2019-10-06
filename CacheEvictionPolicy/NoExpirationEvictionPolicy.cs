@@ -10,9 +10,6 @@ namespace CacheEvictionPolicy
             get { return "NoExpirationEvictionPolicy"; }
         }
         public DateTime? TimeToExpire { get { return null; } }
-        public IEvictionPolicy RefreshExpiration()
-        {
-            return this;
-        }
+        public bool IsExpired() { return false; }
     }
 }

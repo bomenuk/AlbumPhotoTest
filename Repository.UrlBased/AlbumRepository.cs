@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using Repository.DTOs;
+using Repository.Contracts;
+using Repository.Contracts.DTOs;
 
 namespace Repository.UrlBased
 {

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using AlbumPhotoService.Contracts.Entities;
+using AlbumPhotoFetchService.Contracts.Entities;
 
-namespace AlbumPhotoService.Contracts
+namespace AlbumPhotoFetchService.Contracts
 {
     public interface IAlbumPhotoService
     {
+        IList<Album> GetAllAlbums();
         Album GetAlbum(int albumId);
         IList<Album> GetAlbumsByUserId(int userId);
     }

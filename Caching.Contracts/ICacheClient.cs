@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using AlbumPhotoService.Contracts.Entities;
 
 namespace Caching.Contracts
 {
-    public interface ICacheClient
+    public interface ICacheClient<T>
     {
-        IList<T> GetTopicData<T>(string topicName, Func<string, IList<T>> cacheMissLoadFunc, IEvictionPolicy evictionPolicy) where T: baseServiceEntity;
-        void InvalidTopicCache(string topicName);
+        IList<T> GetTopicData(string topicName, Func<IList<T>> cacheMissLoadFunc, IEvictionPolicy evictionPolicy);
+        int NumberOfTopics { get; }
     }
 }

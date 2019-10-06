@@ -6,6 +6,6 @@ namespace Caching.Contracts
     {
         string Name { get; }
         DateTime? TimeToExpire { get; }
-        IEvictionPolicy RefreshExpiration();
+        bool IsExpired();
     }
 }

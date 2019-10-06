@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Repository.DTOs;
+﻿using System.Collections.Generic;
+using Repository.Contracts.DTOs;
 
-namespace Repository
+namespace Repository.Contracts
 {
-    public interface IAlbumRepository:IRepository<Album>
+    public interface IAlbumRepository : IRepository<Album>
     {
         IList<Album> GetAlbumsByUserId(int userId);
     }

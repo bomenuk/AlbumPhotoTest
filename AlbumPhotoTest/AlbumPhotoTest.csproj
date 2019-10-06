@@ -1,16 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="App.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlbumPhotoSerivce\AlbumPhotoFetchService.csproj" />
+    <ProjectReference Include="..\CacheEvictionPolicy\CacheEvictionPolicy.csproj" />
+    <ProjectReference Include="..\Caching.Contracts\Caching.Contracts.csproj" />
+    <ProjectReference Include="..\Caching.MemoryBased\Caching.MemoryBased.csproj" />
+    <ProjectReference Include="..\Repository.UrlBased\Repository.UrlBased.csproj" />
+    <ProjectReference Include="..\Repository\Repository.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
